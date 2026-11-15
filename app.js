@@ -4,7 +4,7 @@ import {getFirestore,collection,addDoc,getDocs,query,orderBy} from 'https://www.
 const firebaseConfig={apiKey:"AIzaSyD4m3Fz4p3lwyXWsGD8PFcXdaGbJQOqXzM",authDomain:"fitnesstracker-ec7f0.firebaseapp.com",projectId:"fitnesstracker-ec7f0",storageBucket:"fitnesstracker-ec7f0.firebasestorage.app",messagingSenderId:"784799575059",appId:"1:784799575059:web:29a66fc169ccab2b9d63e6"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),form=document.querySelector('#log'),tbody=document.querySelector('#entries'),status=document.querySelector('#status'),mode=document.querySelector('#mode'),authBox=document.querySelector('#auth');
 form.elements.date.value=new Date().toLocaleDateString('en-CA');
-const login=document.createElement('button'),logout=document.createElement('button');login.textContent='Sign in with Google';logout.textContent='Sign out';login.type='button';logout.type='button';authBox.append(login,logout);
+const login=document.querySelector('#google-login'),logout=document.querySelector('#google-logout');
 let currentUser=null;
 function show(entries){tbody.replaceChildren();for(const e of entries.sort((a,b)=>b.date.localeCompare(a.date))){const tr=document.createElement('tr');for(const value of [e.date,e.weight+' kg',e.waist?e.waist+' cm':'—',e.notes||'—']){const td=document.createElement('td');td.textContent=value;tr.append(td)}tbody.append(tr)}}
 async function refresh(){if(!currentUser){show([]);return}try{const snap=await getDocs(query(collection(db,'users',currentUser.uid,'entries'),orderBy('date','desc')));show(snap.docs.map(d=>d.data()));status.textContent='Records synced with Firestore.'}catch(e){status.textContent='Firestore read failed: '+e.code}}
